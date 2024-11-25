@@ -57,13 +57,13 @@
     },
 
     markerOptions: {
-      draggable: false
+      draggable: true
     },
 
     maxZoom: 16,
     types: ['geocode'],
-    blur: false,
-    geocodeAfterResult: false,
+    blur: true,
+    geocodeAfterResult: true,
     restoreValueAfterBlur: false
   };
 

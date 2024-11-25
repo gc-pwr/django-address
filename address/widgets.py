@@ -36,7 +36,7 @@ class AddressWidget(forms.TextInput):
 
         js = [
             "https://maps.googleapis.com/maps/api/js?libraries=places&key=%s" % settings.GOOGLE_API_KEY,
-            "js/jquery.geocomplete.min.js",
+            "js/jquery.geocomplete.js",
             "address/js/address.js",
         ]
 
@@ -81,15 +81,23 @@ class AddressWidget(forms.TextInput):
         # For each individual component, and a visible field for the raw
         # input. Begin by generating the raw input.
         elems = [super(AddressWidget, self).render(name, escape(ad.get("formatted", "")), attrs, **kwargs)]
-
+        googlemap = False
+        if "googlemap" in elems[0]:
+            googlemap = True
         # Now add the hidden fields.
         elems.append('<div id="%s_components" style="display: none;">' % name)
         for com in self.components:
-            elems.append(
-                '<input type="hidden" name="%s_%s" data-geo="%s" value="%s" />'
-                % (name, com[0], com[1], escape(ad.get(com[0], "")))
-            )
+            elems.append('<input type="hidden" id="%s_%s" name="%s_%s" data-geo="%s" value="%s"/>' % (
+                            name,
+                            com[0],
+                            name,
+                            com[0],
+                            com[1],
+                            escape(ad.get(com[0], ''))
+                        ))
         elems.append("</div>")
+        if googlemap:
+            elems.append('<div class="map_canvas_wrapper"><div id="map_canvas" style="height: 400px"></div></div>')
 
         return mark_safe("\n".join(elems))
 
